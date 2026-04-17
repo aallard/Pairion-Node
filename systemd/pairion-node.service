@@ -1,0 +1,33 @@
+# pairion-node.service — systemd unit for Pairion Node
+#
+# This is a template committed to the repo. It is NOT installed or exercised
+# in M0. The install script that places it into /etc/systemd/system/ arrives
+# at M6 alongside real hardware bring-up.
+#
+# See CONVENTIONS §2.16 for deployment paths.
+
+[Unit]
+Description=Pairion Node — Ambient Voice-First AI Endpoint
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/opt/pairion-node/pairion-node
+Restart=always
+RestartSec=5
+Environment=PAIRION_SERVER_URL=ws://pairion.local:18789/ws/v1
+WorkingDirectory=/opt/pairion-node
+StandardOutput=journal
+StandardError=journal
+User=pairion
+Group=pairion
+
+# Security hardening
+NoNewPrivileges=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/opt/pairion-node /var/log/pairion-node
+
+[Install]
+WantedBy=multi-user.target
